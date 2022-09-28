@@ -44,9 +44,9 @@ Checks that `$reference` doesn't have any circular memory references.
 
 # CAVEATS
 
-This module is based on and quite similar to [Test::Memory::Cycle](https://metacpan.org/pod/Test::Memory::Cycle), but that module
-includes more tests and features than this one.  That is because so far I only really
-need the one test.  Others may be added in the future.
+This module is based on and quite similar to [Test::Memory::Cycle](https://metacpan.org/pod/Test::Memory::Cycle).  That module is
+more mature, and has more features.  So far I only need the one test function.  Other
+features may be added in the future.
 
 # SEE ALSO
 
