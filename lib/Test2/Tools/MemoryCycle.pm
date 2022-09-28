@@ -3,7 +3,7 @@ package Test2::Tools::MemoryCycle;
 use strict;
 use warnings;
 use 5.008004;
-use Devel::Cycle qw( find_cycle find_weakened_cycle );
+use Devel::Cycle qw( find_cycle );
 use Test2::API qw( context );
 use Exporter qw( import );
 
