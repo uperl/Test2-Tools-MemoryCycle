@@ -31,6 +31,9 @@ so why write this one?  Well that module uses [Test::Builder](https://metacpan.o
 [Test2::API](https://metacpan.org/pod/Test2::API).  If you want to write [Test2::Suite](https://metacpan.org/pod/Test2::Suite) tests without pulling in [Test::Builder](https://metacpan.org/pod/Test::Builder)
 then this is the cycle testing module for you.
 
+This module also uses the standard [Exporter](https://metacpan.org/pod/Exporter) interface, instead of letting you specify
+a test plan.  That behavior was once in vogue I guess, but I do not care for it.
+
 # FUNCTIONS
 
 ## memory\_cycle\_ok
