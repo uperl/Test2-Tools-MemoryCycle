@@ -37,6 +37,9 @@ so why write this one?  Well that module uses L<Test::Builder>, and this one ins
 L<Test2::API>.  If you want to write L<Test2::Suite> tests without pulling in L<Test::Builder>
 then this is the cycle testing module for you.
 
+This module also uses the standard L<Exporter> interface, instead of letting you specify
+a test plan.  That behavior was once in vogue I guess, but I do not care for it.
+
 =head1 FUNCTIONS
 
 =head2 memory_cycle_ok
