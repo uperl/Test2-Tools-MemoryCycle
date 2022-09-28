@@ -12,6 +12,7 @@ my $post_diag;
 $modules{$_} = $_ for qw(
   Devel::Cycle
   ExtUtils::MakeMaker
+  PadWalker
   Test2::API
   Test2::V0
 );
