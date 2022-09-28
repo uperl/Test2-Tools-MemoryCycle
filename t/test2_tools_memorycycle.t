@@ -27,8 +27,10 @@ $foo->{baz} = sub {
   print $foo->{bar}, "\n";
 };
 
+my $events;
+
 is
-  intercept { memory_cycle_ok $foo },
+  $events = intercept { memory_cycle_ok $foo },
   array {
     event 'Fail' => sub {
       call name => 'no memory cycle';
@@ -37,6 +39,7 @@ is
   },
   'cycled memory fails';
 
+note "pass: @{[ $events->[0]->name ]}";
+note "diag: $_" for map { $_->details } @{ $events->[0]->info };
+
 done_testing;
-
-
