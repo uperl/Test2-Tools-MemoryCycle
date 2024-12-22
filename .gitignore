@@ -2,4 +2,7 @@ Test2-Tools-MemoryCycle-*
 /.build/
 *.swp
 
-
+/Test2-Tools-MemoryCycle-*
+/.build
+*.old
+*.orig
