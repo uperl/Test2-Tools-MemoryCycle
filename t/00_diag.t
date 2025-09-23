@@ -14,6 +14,7 @@ $modules{$_} = $_ for qw(
   ExtUtils::MakeMaker
   PadWalker
   Test2::API
+  Test2::Compare::Base
   Test2::V0
 );
 

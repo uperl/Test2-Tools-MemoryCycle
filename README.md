@@ -45,6 +45,20 @@ memory_cycle_ok $reference;
 
 Checks that `$reference` doesn't have any circular memory references.
 
+## no\_memory\_cycle
+
+```
+is(
+    $got,
+    hash {
+        no_memory_cycle;
+    }
+);
+```
+
+Used in the context of a [Test2::Tools::Compare](https://metacpan.org/pod/Test2::Tools::Compare) comparison.  The whole test will fail with
+appropriate diagnostics if there is a memory cycle in `$got`.
+
 # CAVEATS
 
 This module is based on and quite similar to [Test::Memory::Cycle](https://metacpan.org/pod/Test::Memory::Cycle).  That module is
