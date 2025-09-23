@@ -2,7 +2,9 @@ package Test2::Tools::MemoryCycle;
 
 use strict;
 use warnings;
-use 5.008004;
+use 5.020;
+use feature qw( state );
+use experimental qw( signatures );
 use Devel::Cycle qw( find_cycle );
 use Test2::API qw( context );
 use Exporter qw( import );
@@ -54,9 +56,7 @@ Checks that C<$reference> doesn't have any circular memory references.
 our @EXPORT = qw( memory_cycle_ok );
 
 # Adapted from Test::Memory::Cycle for Test2::API
-sub memory_cycle_ok {
-    my $ref = shift;
-    my $msg = shift;
+sub memory_cycle_ok ($ref, $msg=undef) {
 
     $msg ||= 'no memory cycle';
 
@@ -97,20 +97,19 @@ sub memory_cycle_ok {
     return $ok;
 } # memory_cycle_ok
 
-my %shortnames;
-my $new_shortname = "A";
+sub _ref_shortname ($ref) {
+    state $shortnames = {};
+    state $new_shortname = "A";
 
-sub _ref_shortname {
-    my $ref = shift;
     my $refstr = "$ref";
-    my $refdisp = $shortnames{ $refstr };
+    my $refdisp = $shortnames->{ $refstr };
     if ( !$refdisp ) {
         my $sigil = ref($ref) . " ";
         $sigil = '%' if $sigil eq "HASH ";
         $sigil = '@' if $sigil eq "ARRAY ";
         $sigil = '$' if $sigil eq "REF ";
         $sigil = '&' if $sigil eq "CODE ";
-        $refdisp = $shortnames{ $refstr } = $sigil . $new_shortname++;
+        $refdisp = $shortnames->{ $refstr } = $sigil . $new_shortname++;
     }
 
     return $refdisp;
