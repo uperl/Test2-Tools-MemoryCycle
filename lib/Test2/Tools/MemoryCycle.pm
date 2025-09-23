@@ -8,6 +8,7 @@ use experimental qw( signatures );
 use Devel::Cycle qw( find_cycle );
 use Test2::API qw( context );
 use Exporter qw( import );
+use Carp qw( croak );
 
 # ABSTRACT: Check for memory leaks and circular memory references
 # VERSION
@@ -53,19 +54,13 @@ Checks that C<$reference> doesn't have any circular memory references.
 
 =cut
 
-our @EXPORT = qw( memory_cycle_ok );
+our @EXPORT = qw( memory_cycle_ok no_memory_cycle );
 
-# Adapted from Test::Memory::Cycle for Test2::API
-sub memory_cycle_ok ($ref, $msg=undef) {
-
-    $msg ||= 'no memory cycle';
-
+sub _find_cycle ($ref) {
     my $cycle_no = 0;
     my @diags;
 
-    # Callback function that is called once for each memory cycle found.
-    my $callback = sub {
-        my $path = shift;
+    my $callback = sub ($path) {
         $cycle_no++;
         push( @diags, "Cycle #$cycle_no" );
         foreach (@$path) {
@@ -85,6 +80,17 @@ sub memory_cycle_ok ($ref, $msg=undef) {
     };
 
     find_cycle( $ref, $callback );
+
+    return ($cycle_no, @diags);
+}
+
+# Adapted from Test::Memory::Cycle for Test2::API
+sub memory_cycle_ok ($ref, $msg=undef) {
+
+    $msg ||= 'no memory cycle';
+
+    my($cycle_no, @diags) = _find_cycle($ref);
+
     my $ok = !$cycle_no;
 
     my $ctx = context();
@@ -113,6 +119,50 @@ sub _ref_shortname ($ref) {
     }
 
     return $refdisp;
+}
+
+=head2 no_memory_cycle
+
+ is(
+     $got,
+     hash {
+         no_memory_cycle;
+     }
+ );
+
+Used in the context of a L<Test2::Tools::Compare> comparison.  The whole test will fail with
+appropriate diagnostics if there is a memory cycle in C<$got>.
+
+=cut
+
+sub no_memory_cycle () {
+    my @caller = caller;
+
+    ## only using wantarray to error if called in void or list context
+    #croak "called in void context, probably a bug in your test." unless defined wantarray;  ## no critic (Community::Wantarray)
+    #croak "called in list context, probably a bug in your test." if wantarray;              ## no critic (Community::Wantarray)
+
+    return Test2::Tools::MemoryCycle::NoMemoryCycleCompare->new(
+        file    => $caller[1],
+        lines   => [$caller[2]],
+    );
+
+}
+
+package Test2::Tools::MemoryCycle::NoMemoryCycleCompare;
+
+use parent 'Test2::Compare::Base';
+
+sub name ($self) {
+    return 'memory cycle';
+}
+
+sub verify ($self, %p) {
+    return $p{exists} ? 1 : 0;
+}
+
+sub deltas ($self, %p) {
+    ...
 }
 
 1;
